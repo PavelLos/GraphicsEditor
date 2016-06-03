@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_graphicseditor" default="compile.module.graphicseditor">
+  <dirname property="module.graphicseditor.basedir" file="${ant.file.module_graphicseditor}"/>
+  
+  <property name="module.jdk.home.graphicseditor" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.graphicseditor" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.graphicseditor" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.graphicseditor" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="graphicseditor.output.dir" value="${module.graphicseditor.basedir}/out/production/GraphicsEditor"/>
+  <property name="graphicseditor.testoutput.dir" value="${module.graphicseditor.basedir}/out/test/GraphicsEditor"/>
+  
+  <path id="graphicseditor.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="graphicseditor.module.production.classpath">
+    <path refid="${module.jdk.classpath.graphicseditor}"/>
+  </path>
+  
+  <path id="graphicseditor.runtime.production.module.classpath">
+    <pathelement location="${graphicseditor.output.dir}"/>
+  </path>
+  
+  <path id="graphicseditor.module.classpath">
+    <path refid="${module.jdk.classpath.graphicseditor}"/>
+    <pathelement location="${graphicseditor.output.dir}"/>
+  </path>
+  
+  <path id="graphicseditor.runtime.module.classpath">
+    <pathelement location="${graphicseditor.testoutput.dir}"/>
+    <pathelement location="${graphicseditor.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.graphicseditor">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.graphicseditor">
+    <patternset refid="excluded.from.module.graphicseditor"/>
+  </patternset>
+  
+  <path id="graphicseditor.module.sourcepath">
+    <dirset dir="${module.graphicseditor.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.graphicseditor" depends="compile.module.graphicseditor.production,compile.module.graphicseditor.tests" description="Compile module GraphicsEditor"/>
+  
+  <target name="compile.module.graphicseditor.production" depends="register.custom.compilers" description="Compile module GraphicsEditor; production classes">
+    <mkdir dir="${graphicseditor.output.dir}"/>
+    <javac2 destdir="${graphicseditor.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.graphicseditor}/javac">
+      <compilerarg line="${compiler.args.graphicseditor}"/>
+      <bootclasspath refid="graphicseditor.module.bootclasspath"/>
+      <classpath refid="graphicseditor.module.production.classpath"/>
+      <src refid="graphicseditor.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.graphicseditor"/>
+    </javac2>
+    
+    <copy todir="${graphicseditor.output.dir}">
+      <fileset dir="${module.graphicseditor.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.graphicseditor.tests" depends="register.custom.compilers,compile.module.graphicseditor.production" description="compile module GraphicsEditor; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.graphicseditor" description="cleanup module">
+    <delete dir="${graphicseditor.output.dir}"/>
+    <delete dir="${graphicseditor.testoutput.dir}"/>
+  </target>
+</project>
